@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 
 @WebServlet("/customer")
@@ -49,6 +50,25 @@ public class CustomerController extends HttpServlet {
             }else {
                 resp.getWriter().write("Customer saved successfully");
             }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+
+            CustomerDTO customer = customerData.getCustomer(id, connection);
+            PrintWriter writer = resp.getWriter();
+            Jsonb jsonb = JsonbBuilder.create();
+            jsonb.toJson(customer,writer);
         }catch (Exception e) {
             e.printStackTrace();
         }

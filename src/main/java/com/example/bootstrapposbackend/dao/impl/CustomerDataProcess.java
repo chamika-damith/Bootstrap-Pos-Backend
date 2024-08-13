@@ -10,9 +10,25 @@ import java.sql.SQLException;
 public class CustomerDataProcess implements CustomerData {
 
     static String SAVE_CUSTOMER = "INSERT INTO customer (id,name,address,salary) VALUES (?,?,?,?)";
+    static String GET_CUSTOMER = "SELECT * FROM customer WHERE id=?";
+
     @Override
     public CustomerDTO getCustomer(String cusId, Connection connection) throws SQLException {
-        return null;
+        var customerDTO = new CustomerDTO();
+        try {
+            var ps = connection.prepareStatement(GET_CUSTOMER);
+            ps.setString(1, cusId);
+            var resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                customerDTO.setId(resultSet.getInt("id"));
+                customerDTO.setName(resultSet.getString("name"));
+                customerDTO.setAddress(resultSet.getString("address"));
+                customerDTO.setSalary(resultSet.getDouble("salary"));
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerDTO;
     }
 
     @Override
