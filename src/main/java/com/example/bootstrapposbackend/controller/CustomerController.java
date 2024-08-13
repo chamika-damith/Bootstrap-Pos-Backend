@@ -1,4 +1,9 @@
 package com.example.bootstrapposbackend.controller;
 
-public class CustomerController {
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+
+@WebServlet("/customer")
+public class CustomerController extends HttpServlet {
+
 }
