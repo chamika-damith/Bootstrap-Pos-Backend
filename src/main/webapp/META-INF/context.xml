@@ -1,5 +1,5 @@
 <Context>
-    <Resource name="jdbc/students" auth="Container" type="javax.sql.DataSource"
+    <Resource name="jdbc/customers" auth="Container" type="javax.sql.DataSource"
               maxTotal="10" maxIdle="8" maxWaitMillis="-1"
               username="root" password="2002" driverClassName="com.mysql.cj.jdbc.Driver"
               url="jdbc:mysql://localhost:3306/inventoryPOS?createDatabaseIfNotExist=true"/>
