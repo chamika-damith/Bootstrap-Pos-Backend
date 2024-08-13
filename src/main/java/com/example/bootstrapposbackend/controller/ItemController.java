@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.List;
 
 @WebServlet("/item")
 public class ItemController extends HttpServlet {
@@ -38,6 +39,10 @@ public class ItemController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
+
+        if (id == null) {
+            GetAllItem(req, resp);
+        }
 
         try {
             if (!"application/json".equalsIgnoreCase(req.getContentType())) {
@@ -73,4 +78,63 @@ public class ItemController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+            Jsonb jsonb = JsonbBuilder.create();
+            ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+            boolean updateCustomer = itemData.updateItem(String.valueOf(itemDTO.getId()), itemDTO, connection);
+            if (updateCustomer) {
+                resp.getWriter().write("Item update saved");
+            }else {
+                resp.getWriter().write("Item update not successfully");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+
+            Jsonb jsonb = JsonbBuilder.create();
+            ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+            if (itemData.deleteItem(String.valueOf(itemDTO.getId()), connection)) {
+                resp.getWriter().write("Delete success");
+            }else {
+                resp.getWriter().write("Delete not success");
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void GetAllItem(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+
+            List<ItemDTO> allItem = itemData.getAllItem(connection);
+            PrintWriter writer = resp.getWriter();
+            Jsonb jsonb = JsonbBuilder.create();
+            jsonb.toJson(allItem,writer);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

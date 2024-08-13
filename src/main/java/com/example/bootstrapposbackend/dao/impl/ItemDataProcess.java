@@ -7,12 +7,18 @@ import com.example.bootstrapposbackend.dto.ItemDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDataProcess implements ItemData {
 
     static String SAVE_ITEM = "INSERT INTO item (id,name,price,qty) VALUES (?,?,?,?)";
     static String GET_ITEM = "SELECT * FROM item WHERE id=?";
+    static String GET_ALL_ITEM = "SELECT * FROM item";
+
+    static String UPDATE_ITEM = "UPDATE item SET name=?,price=?,qty=? WHERE id=?";
+    static String DELETE_ITEM= "DELETE FROM item WHERE id=?";
+
 
 
 
@@ -58,16 +64,60 @@ public class ItemDataProcess implements ItemData {
 
     @Override
     public boolean deleteItem(String itemId, Connection connection) {
-        return false;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(DELETE_ITEM);
+            preparedStatement.setString(1,itemId);
+
+            if (preparedStatement.executeUpdate() !=0){
+                return true;
+            }else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public boolean updateItem(String itemId, ItemDTO itemDTO, Connection connection) {
-        return false;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(UPDATE_ITEM);
+            preparedStatement.setString(1,itemDTO.getName());
+            preparedStatement.setDouble(2,itemDTO.getPrice());
+            preparedStatement.setInt(3,itemDTO.getQty());
+            preparedStatement.setString(4,itemId);
+
+            if (preparedStatement.executeUpdate() !=0){
+                return true;
+            }else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<ItemDTO> getAllItem(Connection connection) {
-        return null;
+        List<ItemDTO> customerDTOS = new ArrayList<>();
+        try {
+            var ps = connection.prepareStatement(GET_ALL_ITEM);
+            var resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                ItemDTO itemDTO = new ItemDTO();
+                itemDTO.setId(resultSet.getInt("id"));
+                itemDTO.setName(resultSet.getString("name"));
+                itemDTO.setPrice(resultSet.getDouble("price"));
+                itemDTO.setQty(resultSet.getInt("qty"));
+
+                customerDTOS.add(itemDTO);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerDTOS;
     }
 }
