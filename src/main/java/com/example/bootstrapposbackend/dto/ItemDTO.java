@@ -1,4 +1,15 @@
 package com.example.bootstrapposbackend.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class ItemDTO {
+    int id;
+    String name;
+    double price;
+    int qty;
 }

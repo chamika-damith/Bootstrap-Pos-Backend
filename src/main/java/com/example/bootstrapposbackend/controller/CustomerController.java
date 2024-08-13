@@ -29,7 +29,7 @@ public class CustomerController extends HttpServlet {
 
         try {
             var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/customers");
+            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/pos");
             this.connection = pool.getConnection();
         }catch (Exception e) {
             e.printStackTrace();
