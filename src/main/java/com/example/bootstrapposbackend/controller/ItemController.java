@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 
 @WebServlet("/item")
@@ -27,7 +28,7 @@ public class ItemController extends HttpServlet {
     public void init() throws ServletException {
         try {
             var ctx = new InitialContext();
-            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/customers");
+            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/pos");
             this.connection = pool.getConnection();
         }catch (Exception e) {
             e.printStackTrace();
@@ -36,6 +37,25 @@ public class ItemController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+
+            ItemDTO itemDTO = itemData.getItem(id, connection);
+            PrintWriter writer = resp.getWriter();
+            Jsonb jsonb = JsonbBuilder.create();
+            jsonb.toJson(itemDTO,writer);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             if (!"application/json".equalsIgnoreCase(req.getContentType())) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");

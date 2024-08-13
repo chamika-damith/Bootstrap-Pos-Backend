@@ -1,6 +1,7 @@
 package com.example.bootstrapposbackend.dao.impl;
 
 import com.example.bootstrapposbackend.dao.ItemData;
+import com.example.bootstrapposbackend.dto.CustomerDTO;
 import com.example.bootstrapposbackend.dto.ItemDTO;
 
 import java.sql.Connection;
@@ -11,11 +12,28 @@ import java.util.List;
 public class ItemDataProcess implements ItemData {
 
     static String SAVE_ITEM = "INSERT INTO item (id,name,price,qty) VALUES (?,?,?,?)";
+    static String GET_ITEM = "SELECT * FROM item WHERE id=?";
+
 
 
     @Override
     public ItemDTO getItem(String itemId, Connection connection) throws SQLException {
-        return null;
+        var itemDTO = new ItemDTO();
+        try {
+            var ps = connection.prepareStatement(GET_ITEM);
+            ps.setString(1, itemId);
+            var resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                itemDTO.setId(resultSet.getInt("id"));
+                itemDTO.setName(resultSet.getString("name"));
+                itemDTO.setPrice(resultSet.getDouble("price"));
+                itemDTO.setQty(resultSet.getInt("qty"));
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return itemDTO;
     }
 
     @Override
