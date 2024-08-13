@@ -6,11 +6,14 @@ import com.example.bootstrapposbackend.dto.CustomerDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerDataProcess implements CustomerData {
 
     static String SAVE_CUSTOMER = "INSERT INTO customer (id,name,address,salary) VALUES (?,?,?,?)";
     static String GET_CUSTOMER = "SELECT * FROM customer WHERE id=?";
+    static String GET_ALL_CUSTOMER = "SELECT * FROM customer";
     static String UPDATE_CUSTOMER = "UPDATE customer SET name=?,address=?,salary=? WHERE id=?";
     static String DELETE_CUSTOMER= "DELETE FROM customer WHERE id=?";
 
@@ -28,6 +31,7 @@ public class CustomerDataProcess implements CustomerData {
                 customerDTO.setAddress(resultSet.getString("address"));
                 customerDTO.setSalary(resultSet.getDouble("salary"));
             }
+
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,5 +93,27 @@ public class CustomerDataProcess implements CustomerData {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomer(Connection connection) {
+        List<CustomerDTO> customerDTOS = new ArrayList<>();
+        try {
+            var ps = connection.prepareStatement(GET_ALL_CUSTOMER);
+            var resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                CustomerDTO customerDTO = new CustomerDTO();
+                customerDTO.setId(resultSet.getInt("id"));
+                customerDTO.setName(resultSet.getString("name"));
+                customerDTO.setAddress(resultSet.getString("address"));
+                customerDTO.setSalary(resultSet.getDouble("salary"));
+                
+                customerDTOS.add(customerDTO);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerDTOS;
     }
 }
