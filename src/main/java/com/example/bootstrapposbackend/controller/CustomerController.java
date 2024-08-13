@@ -93,4 +93,25 @@ public class CustomerController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+
+            Jsonb jsonb = JsonbBuilder.create();
+            CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+            if (customerData.deleteCustomer(String.valueOf(customerDTO.getId()), connection)) {
+                resp.getWriter().write("Delete success");
+            }else {
+                resp.getWriter().write("Delete not success");
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

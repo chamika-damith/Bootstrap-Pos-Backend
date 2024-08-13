@@ -12,6 +12,7 @@ public class CustomerDataProcess implements CustomerData {
     static String SAVE_CUSTOMER = "INSERT INTO customer (id,name,address,salary) VALUES (?,?,?,?)";
     static String GET_CUSTOMER = "SELECT * FROM customer WHERE id=?";
     static String UPDATE_CUSTOMER = "UPDATE customer SET name=?,address=?,salary=? WHERE id=?";
+    static String DELETE_CUSTOMER= "DELETE FROM customer WHERE id=?";
 
 
     @Override
@@ -55,7 +56,19 @@ public class CustomerDataProcess implements CustomerData {
 
     @Override
     public boolean deleteCustomer(String cusId, Connection connection) {
-        return false;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(DELETE_CUSTOMER);
+            preparedStatement.setString(1,cusId);
+
+            if (preparedStatement.executeUpdate() !=0){
+                return true;
+            }else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
