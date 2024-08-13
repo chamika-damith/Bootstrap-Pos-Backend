@@ -11,6 +11,8 @@ public class CustomerDataProcess implements CustomerData {
 
     static String SAVE_CUSTOMER = "INSERT INTO customer (id,name,address,salary) VALUES (?,?,?,?)";
     static String GET_CUSTOMER = "SELECT * FROM customer WHERE id=?";
+    static String UPDATE_CUSTOMER = "UPDATE customer SET name=?,address=?,salary=? WHERE id=?";
+
 
     @Override
     public CustomerDTO getCustomer(String cusId, Connection connection) throws SQLException {
@@ -58,6 +60,21 @@ public class CustomerDataProcess implements CustomerData {
 
     @Override
     public boolean updateCustomer(String cusId, CustomerDTO customer, Connection connection) {
-        return false;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(UPDATE_CUSTOMER);
+            preparedStatement.setString(1,customer.getName());
+            preparedStatement.setString(2,customer.getAddress());
+            preparedStatement.setDouble(3,customer.getSalary());
+            preparedStatement.setString(4,cusId);
+
+            if (preparedStatement.executeUpdate() !=0){
+                return true;
+            }else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

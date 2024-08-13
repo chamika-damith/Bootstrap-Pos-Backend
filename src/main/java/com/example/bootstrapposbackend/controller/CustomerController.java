@@ -73,4 +73,24 @@ public class CustomerController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            if (!"application/json".equalsIgnoreCase(req.getContentType())) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
+                return;
+            }
+            Jsonb jsonb = JsonbBuilder.create();
+            CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
+            boolean updateCustomer = customerData.updateCustomer(String.valueOf(customerDTO.getId()), customerDTO, connection);
+            if (updateCustomer) {
+                resp.getWriter().write("Customer update saved");
+            }else {
+                resp.getWriter().write("Customer update successfully");
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
