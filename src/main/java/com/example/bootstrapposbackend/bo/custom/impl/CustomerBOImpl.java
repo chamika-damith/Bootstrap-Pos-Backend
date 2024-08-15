@@ -40,7 +40,7 @@ public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public boolean updateCustomer(CustomerDTO customerDTO, String Id, Connection connection) {
-        return false;
+        return customerData.update(new Customer(customerDTO.getId(),customerDTO.getName(),customerDTO.getAddress(),customerDTO.getSalary()),Id,connection);
     }
 
     @Override
@@ -50,11 +50,18 @@ public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public boolean deleteCustomer(String id, Connection connection) {
-        return false;
+        return customerData.delete(id, connection);
     }
 
     @Override
     public CustomerDTO get(String id, Connection connection) {
-        return null;
+        Customer customer = customerData.get(id, connection);
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(customer.getId());
+        customerDTO.setName(customer.getName());
+        customerDTO.setAddress(customer.getAddress());
+        customerDTO.setSalary(customer.getSalary());
+
+        return customerDTO;
     }
 }
