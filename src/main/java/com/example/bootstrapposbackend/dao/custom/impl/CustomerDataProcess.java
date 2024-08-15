@@ -63,14 +63,14 @@ public class CustomerDataProcess implements CustomerData {
     }
 
     @Override
-    public boolean update(Customer entity, String cusId, Connection connection) {
+    public boolean update(Customer entity, String Id, Connection connection) {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(UPDATE_CUSTOMER);
             preparedStatement.setString(1,entity.getName());
             preparedStatement.setString(2,entity.getAddress());
             preparedStatement.setDouble(3,entity.getSalary());
-            preparedStatement.setString(4,cusId);
+            preparedStatement.setString(4,Id);
 
             if (preparedStatement.executeUpdate() !=0){
                 return true;
