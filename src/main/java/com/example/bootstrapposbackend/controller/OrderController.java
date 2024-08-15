@@ -1,5 +1,8 @@
 package com.example.bootstrapposbackend.controller;
 
+import com.example.bootstrapposbackend.bo.BOFactory;
+import com.example.bootstrapposbackend.bo.custom.CustomerBO;
+import com.example.bootstrapposbackend.bo.custom.OrderBO;
 import com.example.bootstrapposbackend.dao.custom.OrderData;
 import com.example.bootstrapposbackend.dao.custom.impl.OrderDataProcess;
 import com.example.bootstrapposbackend.dto.OrderDTO;
@@ -20,7 +23,8 @@ import java.sql.Connection;
 public class OrderController extends HttpServlet {
     Connection connection;
 
-    OrderData orderData= new OrderDataProcess();
+    private OrderBO orderBO= (OrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOType.ORDER);
+
 
     @Override
     public void init() throws ServletException {
@@ -42,9 +46,9 @@ public class OrderController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             OrderDTO orderDTO = jsonb.fromJson(req.getReader(), OrderDTO.class);
-            String saveCustomer = orderData.saveOrder(orderDTO,connection);
+            boolean saveCustomer = orderBO.saveOrder(orderDTO,connection);
             System.out.println(orderDTO.getOrderId());
-            if (saveCustomer.isEmpty()) {
+            if (!saveCustomer) {
                 resp.getWriter().write("order not saved");
             }else {
                 resp.getWriter().write("order saved successfully");

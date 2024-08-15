@@ -1,5 +1,8 @@
 package com.example.bootstrapposbackend.controller;
 
+import com.example.bootstrapposbackend.bo.BOFactory;
+import com.example.bootstrapposbackend.bo.custom.CustomerBO;
+import com.example.bootstrapposbackend.bo.custom.ItemBO;
 import com.example.bootstrapposbackend.dao.custom.ItemData;
 import com.example.bootstrapposbackend.dao.custom.impl.ItemDataProcess;
 import com.example.bootstrapposbackend.dto.ItemDTO;
@@ -22,7 +25,8 @@ import java.util.List;
 public class ItemController extends HttpServlet {
     Connection connection;
 
-    ItemData itemData=new ItemDataProcess();
+    private ItemBO itemBO= (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOType.ITEM);
+
 
     @Override
     public void init() throws ServletException {
@@ -49,7 +53,7 @@ public class ItemController extends HttpServlet {
                 return;
             }
 
-            ItemDTO itemDTO = itemData.getItem(id, connection);
+            ItemDTO itemDTO = itemBO.get(id, connection);
             PrintWriter writer = resp.getWriter();
             Jsonb jsonb = JsonbBuilder.create();
             jsonb.toJson(itemDTO,writer);
@@ -67,8 +71,8 @@ public class ItemController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
-            String saveCustomer = itemData.saveItem(itemDTO,connection);
-            if (saveCustomer.isEmpty()) {
+            boolean saveCustomer = itemBO.saveItem(itemDTO,connection);
+            if (saveCustomer) {
                 resp.getWriter().write("Item not saved");
             }else {
                 resp.getWriter().write("Item saved successfully");
@@ -87,7 +91,7 @@ public class ItemController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
-            boolean updateCustomer = itemData.updateItem(String.valueOf(itemDTO.getId()), itemDTO, connection);
+            boolean updateCustomer = itemBO.updateItem(itemDTO,String.valueOf(itemDTO.getId()), connection);
             if (updateCustomer) {
                 resp.getWriter().write("Item update saved");
             }else {
@@ -108,7 +112,7 @@ public class ItemController extends HttpServlet {
 
             Jsonb jsonb = JsonbBuilder.create();
             ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
-            if (itemData.deleteItem(String.valueOf(itemDTO.getId()), connection)) {
+            if (itemBO.deleteItem(String.valueOf(itemDTO.getId()), connection)) {
                 resp.getWriter().write("Delete success");
             }else {
                 resp.getWriter().write("Delete not success");
@@ -127,7 +131,7 @@ public class ItemController extends HttpServlet {
                 return;
             }
 
-            List<ItemDTO> allItem = itemData.getAllItem(connection);
+            List<ItemDTO> allItem = itemBO.getAllItem(connection);
             PrintWriter writer = resp.getWriter();
             Jsonb jsonb = JsonbBuilder.create();
             jsonb.toJson(allItem,writer);
