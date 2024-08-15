@@ -1,10 +1,9 @@
-package com.example.bootstrapposbackend.dao.impl;
+package com.example.bootstrapposbackend.dao.custom.impl;
 
-import com.example.bootstrapposbackend.dao.OrderData;
+import com.example.bootstrapposbackend.dao.custom.OrderData;
 import com.example.bootstrapposbackend.dto.OrderDTO;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 
 public class OrderDataProcess implements OrderData {

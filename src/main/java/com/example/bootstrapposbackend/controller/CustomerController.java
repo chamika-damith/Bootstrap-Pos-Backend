@@ -1,7 +1,7 @@
 package com.example.bootstrapposbackend.controller;
 
-import com.example.bootstrapposbackend.dao.CustomerData;
-import com.example.bootstrapposbackend.dao.impl.CustomerDataProcess;
+import com.example.bootstrapposbackend.dao.custom.CustomerData;
+import com.example.bootstrapposbackend.dao.custom.impl.CustomerDataProcess;
 import com.example.bootstrapposbackend.dto.CustomerDTO;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;

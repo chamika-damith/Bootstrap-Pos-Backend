@@ -1,7 +1,6 @@
-package com.example.bootstrapposbackend.dao.impl;
+package com.example.bootstrapposbackend.dao.custom.impl;
 
-import com.example.bootstrapposbackend.dao.ItemData;
-import com.example.bootstrapposbackend.dto.CustomerDTO;
+import com.example.bootstrapposbackend.dao.custom.ItemData;
 import com.example.bootstrapposbackend.dto.ItemDTO;
 
 import java.sql.Connection;
