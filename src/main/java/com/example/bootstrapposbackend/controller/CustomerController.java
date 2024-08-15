@@ -1,5 +1,8 @@
 package com.example.bootstrapposbackend.controller;
 
+import com.example.bootstrapposbackend.bo.BOFactory;
+import com.example.bootstrapposbackend.bo.custom.CustomerBO;
+import com.example.bootstrapposbackend.dao.DAOFactory;
 import com.example.bootstrapposbackend.dao.custom.CustomerData;
 import com.example.bootstrapposbackend.dao.custom.impl.CustomerDataProcess;
 import com.example.bootstrapposbackend.dto.CustomerDTO;
@@ -22,7 +25,8 @@ import java.util.List;
 public class CustomerController extends HttpServlet {
     Connection connection;
 
-    CustomerData customerData= new CustomerDataProcess();
+    private CustomerBO customerBO= (CustomerBO) BOFactory.getBoFactory().getBO(BOFactory.BOType.CUSTOMER);
+
 
     @Override
     public void init() throws ServletException {
@@ -45,8 +49,8 @@ public class CustomerController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
-            String saveCustomer = customerData.saveCustomer(customerDTO, connection);
-            if (saveCustomer.isEmpty()) {
+            boolean saveCustomer = customerBO.saveCustomer(customerDTO, connection);
+            if (saveCustomer) {
                 resp.getWriter().write("Customer not saved");
             }else {
                 resp.getWriter().write("Customer saved successfully");
@@ -71,7 +75,7 @@ public class CustomerController extends HttpServlet {
                 return;
             }
 
-            CustomerDTO customer = customerData.getCustomer(id, connection);
+            CustomerDTO customer = customerBO.get(id, connection);
             PrintWriter writer = resp.getWriter();
             Jsonb jsonb = JsonbBuilder.create();
             jsonb.toJson(customer,writer);
@@ -89,7 +93,7 @@ public class CustomerController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
-            boolean updateCustomer = customerData.updateCustomer(String.valueOf(customerDTO.getId()), customerDTO, connection);
+            boolean updateCustomer = customerBO.updateCustomer(customerDTO, String.valueOf(customerDTO.getId()),connection);
             if (updateCustomer) {
                 resp.getWriter().write("Customer update saved");
             }else {
@@ -110,7 +114,7 @@ public class CustomerController extends HttpServlet {
 
             Jsonb jsonb = JsonbBuilder.create();
             CustomerDTO customerDTO = jsonb.fromJson(req.getReader(), CustomerDTO.class);
-            if (customerData.deleteCustomer(String.valueOf(customerDTO.getId()), connection)) {
+            if (customerBO.deleteCustomer(String.valueOf(customerDTO.getId()), connection)) {
                 resp.getWriter().write("Delete success");
             }else {
                 resp.getWriter().write("Delete not success");
@@ -129,7 +133,7 @@ public class CustomerController extends HttpServlet {
                 return;
             }
 
-            List<CustomerDTO> allCustomer = customerData.getAllCustomer(connection);
+            List<CustomerDTO> allCustomer = customerBO.getAllCustomer(connection);
             PrintWriter writer = resp.getWriter();
             Jsonb jsonb = JsonbBuilder.create();
             jsonb.toJson(allCustomer,writer);

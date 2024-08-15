@@ -10,5 +10,5 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface OrderData extends CrudDAO<Order> {
-        String saveOrder(OrderDTO orderDTO,Connection connection);
+
 }
