@@ -27,7 +27,7 @@ public class ItemDataProcess implements ItemData {
         PreparedStatement preparedStatement;
         try {
             preparedStatement=connection.prepareStatement(SAVE_ITEM);
-            preparedStatement.setInt(1, entity.getId());
+            preparedStatement.setString(1, entity.getId());
             preparedStatement.setString(2,entity.getName());
             preparedStatement.setDouble(3,entity.getPrice());
             preparedStatement.setInt(4,entity.getQty());
@@ -51,7 +51,7 @@ public class ItemDataProcess implements ItemData {
 
             while (resultSet.next()) {
                 Item item = new Item();
-                item.setId(resultSet.getInt("id"));
+                item.setId(resultSet.getString("id"));
                 item.setName(resultSet.getString("name"));
                 item.setPrice(resultSet.getDouble("price"));
                 item.setQty(resultSet.getInt("qty"));
@@ -114,7 +114,7 @@ public class ItemDataProcess implements ItemData {
             ps.setString(1, id);
             var resultSet = ps.executeQuery();
             while (resultSet.next()) {
-                item.setId(resultSet.getInt("id"));
+                item.setId(resultSet.getString("id"));
                 item.setName(resultSet.getString("name"));
                 item.setPrice(resultSet.getDouble("price"));
                 item.setQty(resultSet.getInt("qty"));

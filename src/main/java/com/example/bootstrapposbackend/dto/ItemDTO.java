@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class ItemDTO {
-    int id;
+    String id;
     String name;
     double price;
     int qty;

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.List;
+import java.util.UUID;
 
 @WebServlet("/item")
 public class ItemController extends HttpServlet {
@@ -71,8 +72,10 @@ public class ItemController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
+            String CusId= UUID.randomUUID().toString();
+            itemDTO.setId(CusId);
             boolean saveCustomer = itemBO.saveItem(itemDTO,connection);
-            if (saveCustomer) {
+            if (!saveCustomer) {
                 resp.getWriter().write("Item not saved");
             }else {
                 resp.getWriter().write("Item saved successfully");

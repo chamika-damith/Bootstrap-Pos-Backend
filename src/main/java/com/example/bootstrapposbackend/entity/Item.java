@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Item {
     @Id
-    int id;
+    String id;
     String name;
     double price;
     int qty;
