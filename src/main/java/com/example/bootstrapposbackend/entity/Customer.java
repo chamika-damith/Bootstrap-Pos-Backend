@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Customer {
     @Id
-    int id;
+    String id;
     String name;
     String address;
     double salary;

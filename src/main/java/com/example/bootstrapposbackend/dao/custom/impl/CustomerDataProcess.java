@@ -25,9 +25,9 @@ public class CustomerDataProcess implements CustomerData {
         PreparedStatement preparedStatement;
         try {
             preparedStatement=connection.prepareStatement(SAVE_CUSTOMER);
-            preparedStatement.setString(1, String.valueOf(entity.getId()));
-            preparedStatement.setString(2,entity.getName());
-            preparedStatement.setString(3,entity.getAddress());
+            preparedStatement.setString(1, entity.getId());
+            preparedStatement.setString(2, entity.getName());
+            preparedStatement.setString(3, entity.getAddress());
             preparedStatement.setString(4, String.valueOf(entity.getSalary()));
 
             if (preparedStatement.executeUpdate() != 0) {
@@ -49,7 +49,7 @@ public class CustomerDataProcess implements CustomerData {
 
             while (resultSet.next()) {
                 Customer customer = new Customer();
-                customer.setId(resultSet.getInt("id"));
+                customer.setId(resultSet.getString("id"));
                 customer.setName(resultSet.getString("name"));
                 customer.setAddress(resultSet.getString("address"));
                 customer.setSalary(resultSet.getDouble("salary"));
@@ -112,7 +112,7 @@ public class CustomerDataProcess implements CustomerData {
             ps.setString(1, id);
             var resultSet = ps.executeQuery();
             while (resultSet.next()) {
-                customer.setId(resultSet.getInt("id"));
+                customer.setId(resultSet.getString("id"));
                 customer.setName(resultSet.getString("name"));
                 customer.setAddress(resultSet.getString("address"));
                 customer.setSalary(resultSet.getDouble("salary"));
