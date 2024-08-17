@@ -94,8 +94,8 @@ public class ItemController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
-            boolean updateCustomer = itemBO.updateItem(itemDTO,String.valueOf(itemDTO.getId()), connection);
-            if (updateCustomer) {
+            boolean updateItem = itemBO.updateItem(itemDTO,String.valueOf(itemDTO.getId()), connection);
+            if (updateItem) {
                 resp.getWriter().write("Item update saved");
             }else {
                 resp.getWriter().write("Item update not successfully");

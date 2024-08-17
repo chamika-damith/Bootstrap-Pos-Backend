@@ -18,6 +18,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.UUID;
 
 @WebServlet("/order")
 public class OrderController extends HttpServlet {
@@ -46,8 +47,10 @@ public class OrderController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             OrderDTO orderDTO = jsonb.fromJson(req.getReader(), OrderDTO.class);
+            String orderId= UUID.randomUUID().toString();
+            orderDTO.setOrderId(orderId);
             boolean saveCustomer = orderBO.saveOrder(orderDTO,connection);
-            System.out.println(orderDTO.getOrderId());
+            System.out.println(orderDTO.getItems());
             if (!saveCustomer) {
                 resp.getWriter().write("order not saved");
             }else {

@@ -5,18 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class OrderDTO {
-    int orderId;
+    String orderId;
     Date orderDate;
-    int cusIdOption;
-    int itemIdOption;
+    String cusIdOption;
+    String itemIdOption;
     int orderQty;
     double total;
     double txtCash;
     double txtDiscount;
+    private List<ItemDTO> items;
 }

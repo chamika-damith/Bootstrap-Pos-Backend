@@ -15,7 +15,6 @@ public class ItemDataProcess implements ItemData {
     static String SAVE_ITEM = "INSERT INTO item (id,name,price,qty) VALUES (?,?,?,?)";
     static String GET_ITEM = "SELECT * FROM item WHERE id=?";
     static String GET_ALL_ITEM = "SELECT * FROM item";
-
     static String UPDATE_ITEM = "UPDATE item SET name=?,price=?,qty=? WHERE id=?";
     static String DELETE_ITEM= "DELETE FROM item WHERE id=?";
 
