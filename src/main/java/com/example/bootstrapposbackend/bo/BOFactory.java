@@ -3,6 +3,7 @@ package com.example.bootstrapposbackend.bo;
 import com.example.bootstrapposbackend.bo.custom.impl.CustomerBOImpl;
 import com.example.bootstrapposbackend.bo.custom.impl.ItemBOImpl;
 import com.example.bootstrapposbackend.bo.custom.impl.OrderBOImpl;
+import com.example.bootstrapposbackend.bo.custom.impl.UserBOImpl;
 
 public class BOFactory {
     public static BOFactory boFactory;
@@ -14,7 +15,7 @@ public class BOFactory {
     }
 
     public enum BOType {
-        CUSTOMER,ITEM,ORDER;
+        CUSTOMER,ITEM,ORDER,USER;
     }
 
     public SuperBO getBO(BOType boType){
@@ -25,6 +26,8 @@ public class BOFactory {
                 return new ItemBOImpl();
             case ORDER:
                 return new OrderBOImpl();
+            case USER:
+                return new UserBOImpl();
             default:
                 return null;
         }

@@ -3,6 +3,7 @@ package com.example.bootstrapposbackend.dao;
 import com.example.bootstrapposbackend.dao.custom.impl.CustomerDataProcess;
 import com.example.bootstrapposbackend.dao.custom.impl.ItemDataProcess;
 import com.example.bootstrapposbackend.dao.custom.impl.OrderDataProcess;
+import com.example.bootstrapposbackend.dao.custom.impl.UserDataProcess;
 
 public class DAOFactory {
     public static DAOFactory daoFactory;
@@ -14,7 +15,7 @@ public class DAOFactory {
     }
 
     public enum DAOType {
-        CUSTOMER,ITEM,ORDER;
+        CUSTOMER,ITEM,ORDER,USER;
     }
 
     public SuperDAO getDao(DAOType daoType){
@@ -25,6 +26,8 @@ public class DAOFactory {
                 return new ItemDataProcess();
             case ORDER:
                 return new OrderDataProcess();
+            case USER:
+                return new UserDataProcess();
             default:
                 return null;
         }
