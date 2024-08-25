@@ -16,7 +16,7 @@ public class UserBOImpl implements UserBO {
     @Override
     public boolean saveUser(UserDTO userDTO, Connection connection) {
         String id= UUID.randomUUID().toString();
-        return userData.save(new User(id,userDTO.getEmail(),userDTO.getUsername(),userDTO.getPassword()),connection);
+        return userData.save(new User(id,userDTO.getUsername(),userDTO.getEmail(),userDTO.getPassword()),connection);
     }
 
     @Override

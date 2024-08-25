@@ -4,61 +4,84 @@ import com.example.bootstrapposbackend.dao.custom.OrderData;
 import com.example.bootstrapposbackend.dto.OrderDTO;
 import com.example.bootstrapposbackend.entity.Order;
 import com.example.bootstrapposbackend.entity.OrderDetail;
+import jakarta.transaction.Transactional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+
 public class OrderDataProcess implements OrderData {
+
     public boolean save(Order order, Connection connection) {
-        String SAVE_ORDER = "INSERT INTO `order` (order_id, order_date, cus_id,item_id,order_qty, total, cash, discount) VALUES (?, ?, ?, ?, ?, ?,?,?)";
-        String SAVE_ORDER_DETAIL = "INSERT INTO `order_detail` (order_id, item_id, order_qty, item_price) VALUES (?, ?, ?, ?)";
+        if (updateOrder(order,connection)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean updateOrder(Order order, Connection connection) {
+        String UPDATE_ORDER = "UPDATE `order` SET order_date = ?, cus_id = ?, total = ?, cash = ?, discount = ? WHERE order_id = ?";
+        String UPDATE_ORDER_DETAIL = "UPDATE `order_detail` SET order_qty = ?, item_price = ? WHERE order_id = ? AND item_id = ?";
+        String UPDATE_ITEM = "UPDATE `item` SET qty = item.qty - ? + ? WHERE id = ?";
 
         PreparedStatement orderStmt = null;
         PreparedStatement orderDetailStmt = null;
+        PreparedStatement itemStmt = null;
 
         try {
-            connection.setAutoCommit(false);  // Begin transaction
+            connection.setAutoCommit(false);
 
-            // Save Order
-            orderStmt = connection.prepareStatement(SAVE_ORDER);
-            orderStmt.setString(1, order.getOrderId());
-            orderStmt.setDate(2, new java.sql.Date(order.getOrderDate().getTime()));
-            orderStmt.setString(3, order.getCusIdOption());
-            orderStmt.setString(4, order.getItemIdOption());
-            orderStmt.setInt(5, order.getOrderQty());
-            orderStmt.setDouble(6, order.getTotal());
-            orderStmt.setDouble(7, order.getTxtCash());
-            orderStmt.setDouble(8, order.getTxtDiscount());
+            // Update Order
+            orderStmt = connection.prepareStatement(UPDATE_ORDER);
+            orderStmt.setDate(1, new java.sql.Date(order.getOrderDate().getTime()));
+            orderStmt.setString(2, order.getCusIdOption());
+            orderStmt.setDouble(3, order.getTotal());
+            orderStmt.setDouble(4, order.getTxtCash());
+            orderStmt.setDouble(5, order.getTxtDiscount());
+            orderStmt.setString(6, order.getOrderId());
 
             if (orderStmt.executeUpdate() == 0) {
-                connection.rollback();  // Rollback transaction if order save fails
+                connection.rollback();
                 return false;
             }
 
-            // Save Order Details
-            orderDetailStmt = connection.prepareStatement(SAVE_ORDER_DETAIL);
+            // Update Order Details and Item Quantities
             for (OrderDetail orderDetail : order.getOrderDetails()) {
-                orderDetailStmt.setString(1, order.getOrderId());
-                orderDetailStmt.setString(2, orderDetail.getItem().getId());
-                orderDetailStmt.setInt(3, orderDetail.getOrderQty());
-                orderDetailStmt.setDouble(4, orderDetail.getItemPrice());
+                // Update Order Detail
+                orderDetailStmt = connection.prepareStatement(UPDATE_ORDER_DETAIL);
+                orderDetailStmt.setInt(1, orderDetail.getOrderQty());
+                orderDetailStmt.setDouble(2, orderDetail.getItemPrice());
+                orderDetailStmt.setString(3, order.getOrderId());
+                orderDetailStmt.setString(4, orderDetail.getItem().getId());
 
                 if (orderDetailStmt.executeUpdate() == 0) {
-                    connection.rollback();  // Rollback transaction if order detail save fails
+                    connection.rollback();
+                    return false;
+                }
+
+                // Update Item Quantity
+                itemStmt = connection.prepareStatement(UPDATE_ITEM);
+                itemStmt.setInt(1, orderDetail.getOrderQty());
+                itemStmt.setInt(2, orderDetail.getOrderQty());
+                itemStmt.setString(3, orderDetail.getItem().getId());
+
+                if (itemStmt.executeUpdate() == 0) {
+                    connection.rollback();
                     return false;
                 }
             }
 
-            connection.commit();  // Commit transaction if everything was successful
+            connection.commit();
             return true;
 
         } catch (Exception e) {
             e.printStackTrace();
             try {
                 if (connection != null) {
-                    connection.rollback();  // Rollback transaction on exception
+                    connection.rollback();
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -67,7 +90,8 @@ public class OrderDataProcess implements OrderData {
             try {
                 if (orderStmt != null) orderStmt.close();
                 if (orderDetailStmt != null) orderDetailStmt.close();
-                if (connection != null) connection.setAutoCommit(true);  // Reset auto-commit mode
+                if (itemStmt != null) itemStmt.close();
+                if (connection != null) connection.setAutoCommit(true);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

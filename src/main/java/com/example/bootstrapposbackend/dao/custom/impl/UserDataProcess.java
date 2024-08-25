@@ -57,8 +57,10 @@ public class UserDataProcess implements UserData {
             var resultSet = ps.executeQuery();
 
 
-            if (resultSet != null) {
+            if (resultSet.next()) {
                 return true;
+            }else {
+                return false;
             }
 
         } catch (SQLException e) {

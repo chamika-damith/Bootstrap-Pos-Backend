@@ -64,6 +64,7 @@ public class UserController extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
+
         try {
             if (!"application/json".equalsIgnoreCase(req.getContentType())) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expected content type: application/json");
@@ -72,7 +73,6 @@ public class UserController extends HttpServlet {
 
 
             boolean getUser=userBO.isExistsUser(email,password,connection);
-            System.out.println(getUser);
             PrintWriter writer = resp.getWriter();
             writer.write(String.valueOf(getUser));
         }catch (Exception e) {

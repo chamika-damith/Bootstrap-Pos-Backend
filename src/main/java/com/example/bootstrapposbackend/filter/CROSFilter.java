@@ -19,7 +19,7 @@ public class CROSFilter extends HttpFilter {
         if (origin != null && origin.equals(configedOrigin)) {
             res.setHeader("Access-Control-Allow-Origin", origin);
             res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-            res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+            res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             res.setHeader("Access-Control-Expose-Headers", "Content-Type");
 
             // Handle preflight request (OPTIONS)
