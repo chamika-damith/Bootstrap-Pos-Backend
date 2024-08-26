@@ -5,9 +5,9 @@ import com.example.bootstrapposbackend.dao.DAOFactory;
 import com.example.bootstrapposbackend.dao.custom.UserData;
 import com.example.bootstrapposbackend.dto.UserDTO;
 import com.example.bootstrapposbackend.entity.User;
+import com.example.bootstrapposbackend.util.UtilProcess;
 
 import java.sql.Connection;
-import java.util.UUID;
 
 public class UserBOImpl implements UserBO {
 
@@ -15,7 +15,7 @@ public class UserBOImpl implements UserBO {
 
     @Override
     public boolean saveUser(UserDTO userDTO, Connection connection) {
-        String id= UUID.randomUUID().toString();
+        String id= UtilProcess.generateId();
         return userData.save(new User(id,userDTO.getUsername(),userDTO.getEmail(),userDTO.getPassword()),connection);
     }
 

@@ -6,6 +6,7 @@ import com.example.bootstrapposbackend.bo.custom.OrderBO;
 import com.example.bootstrapposbackend.dao.custom.OrderData;
 import com.example.bootstrapposbackend.dao.custom.impl.OrderDataProcess;
 import com.example.bootstrapposbackend.dto.OrderDTO;
+import com.example.bootstrapposbackend.util.UtilProcess;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -47,7 +48,7 @@ public class OrderController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             OrderDTO orderDTO = jsonb.fromJson(req.getReader(), OrderDTO.class);
-            String orderId= UUID.randomUUID().toString();
+            String orderId= UtilProcess.generateId();
             orderDTO.setOrderId(orderId);
             boolean saveCustomer = orderBO.saveOrder(orderDTO,connection);
             System.out.println(orderDTO.getItems());

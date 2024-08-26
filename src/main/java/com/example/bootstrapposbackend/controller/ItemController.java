@@ -6,6 +6,7 @@ import com.example.bootstrapposbackend.bo.custom.ItemBO;
 import com.example.bootstrapposbackend.dao.custom.ItemData;
 import com.example.bootstrapposbackend.dao.custom.impl.ItemDataProcess;
 import com.example.bootstrapposbackend.dto.ItemDTO;
+import com.example.bootstrapposbackend.util.UtilProcess;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -72,7 +73,7 @@ public class ItemController extends HttpServlet {
             }
             Jsonb jsonb = JsonbBuilder.create();
             ItemDTO itemDTO = jsonb.fromJson(req.getReader(), ItemDTO.class);
-            String CusId= UUID.randomUUID().toString();
+            String CusId= UtilProcess.generateId();
             itemDTO.setId(CusId);
             boolean saveCustomer = itemBO.saveItem(itemDTO,connection);
             if (!saveCustomer) {
